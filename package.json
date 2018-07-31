@@ -3,7 +3,13 @@
     "version": "0.1.0",
     "description": "A simple text-adventure game engine",
     "main": "app.js",
-    "author": "Justin Bulmer",
+    "author": "Dylan Bulmer",
+    "contributors": [
+        {
+            "name": "Justin Bulmer",
+            "url": "https://github.com/JustinBulmer"
+        }
+    ],
     "readme": "README.md",
     "bugs": {
         "url": "https://github.com/BulmerSolutions/Text-Game/issues"

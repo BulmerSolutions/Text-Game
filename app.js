@@ -1,44 +1,43 @@
 'use strict';
 
-// get game items
-const GAMEDATA = require('./game.json');
-const player = require('./player.js');
-
-// get NodeJS items
+// Get NodeJS items
 const util = require('util');
 const color = require('cli-color');
+
+// Get game items
+const GAMEDATA = require('./game.json');
+const { Engine } = require('./engine');
+
+// Setup text-interface for user input
 const input = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-// setup ongoing game data
-const game = {
-    end: false,
-    room: GAMEDATA.rooms[0]
-};
+// Create the Game object
+const game = new Engine(GAMEDATA);
 
 // Clear console
 process.stdout.write(color.erase.screen);
 
-// Print out the title
-process.title = GAMEDATA.title;
-console.log("\n " + color.bold.whiteBright(GAMEDATA.title));
-console.log(color.italic("  By: " + GAMEDATA.meta.author) + " \n");
+// Print out the title and author
+process.title = game.title;
+console.log("\n " + color.bold.whiteBright(game.title));
+console.log(color.italic("  By: " + game.author) + " \n");
 
 let dashes = "";
-for (let d = 0; d < GAMEDATA.title.length - 2; d++) {
+for (let d = 0; d < game.title.length - 2; d++) {
     dashes += "-";
 }
 
 console.log("  " + dashes + " \n");
 
 // Give the context of the room.
-if (typeof game.room.context === "string") {
-    console.log(color.cyanBright(' ? ') + game.room.context);
+if (typeof game.currentRoom.context === "string") {
+    console.log(color.cyanBright(' ? ') + game.currentRoom.context);
 } else {
-    for (let i = 0; i < game.room.context.length; i++) {
-        console.log(color.cyanBright(' ? ') + game.room.context[i]);
+    for (let i = 0; i < game.currentRoom.context.length; i++) {
+        console.log(color.cyanBright(' ? ') + game.currentRoom.context[i]);
     }
 }
 
@@ -55,26 +54,26 @@ let update = () => {
         // decide what the player wants to do
         if (message[0] !== '') {
             switch (message[0]) {
-                case "search":
+                case "search": // look for something
                 case "where":
-                case "look": // look for something
+                case "look": 
                     for (let i = 1; i < message.length; i++) {
                         switch (message[i]) {
                             case "exit":
-                                output += player.look(game.room, message[i]);
+                                output += game.player.look(game.currentRoom, message[i]);
                                 break;
                             case "items":
-                                output += player.look(game.room, 'items');
+                                output += game.player.look(game.currentRoom, 'items');
                                 break;
                             case "around":
-                                output += player.look(game.room, 'around');
+                                output += game.player.look(game.currentRoom, 'around');
                                 break;
                         }
                     }
                     break;
                 case "pickup": // pickup an item
                     if (message.length >= 2) {
-                        let item = player.pickup(game.room, message[1]);
+                        let item = game.player.pickup(game.currentRoom, message[1]);
                         output += "You picked up a " + item.name;
                     }
                     break;
@@ -83,34 +82,30 @@ let update = () => {
                     break;
                 case "goto":
                     if (message.length >= 1) {
-                        let index = null;
-
-                        // find the desired room
-                        for (let i = 0; i < game.room.exits.length; i++) {
-                            if (game.room.exits[i].direction === message[1]) {
-                                index = game.room.exits[i].index;
-                            }
-                        }
-
-                        if (index !== null) {
-                            // change room
-                            game.room = GAMEDATA.rooms[index];
-
-                            // Give the context of the room.
-                            if (typeof game.room.context === "string") {
-                                console.log("\n" + color.cyanBright(' ? ') + game.room.context);
-                            } else {
-                                console.log();
-                                for (let i = 0; i < game.room.context.length; i++) {
-                                    console.log(color.cyanBright(' ? ') + game.room.context[i]);
-                                }
-                            }
-                            output = null;
-                        } else {
-                            output += "That is not an avalible direction.";
-                        }
+                        game.goto(message[1]);
                     } else {
                         output += "Please enter a direction.";
+                    }
+                    break;
+                case "debug":
+                    switch (message[1]) {
+                        case "items":
+                            if (game.player.inventory.length > 0) {
+                                output += "You have: ";
+
+                                for (let i = 0; i < game.player.inventory.length; i++) {
+                                    if (i === game.player.inventory.length - 1) {
+                                        output += game.player.inventory[i].name;
+                                    } else {
+                                        output += game.player.inventory[i].name + ", ";
+                                    }
+                                }
+                            } else {
+                                output += "Nothing";
+                            }
+                            break;
+                        default:
+                            output += "That is not a command.";
                     }
                     break;
             }
@@ -122,7 +117,7 @@ let update = () => {
             update();
         } else {
             // print a default output
-            console.log("You stare at " + game.room.location);
+            console.log("You stare at " + game.currentRoom.location);
             update();
         }
     });

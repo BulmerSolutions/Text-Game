@@ -1,8 +1,13 @@
+const { Room } = require('./engine');
+
 class Player {
     /**
+     * @description Creates a new player
+     * @param {Engine} game The game object
      * @param {String} name Name of player
      */
-    constructor(name) {
+    constructor(game, name) {
+        this.game = game;
         this.name = name;
         this.health = 100;
         this.energy = 100;
@@ -11,8 +16,9 @@ class Player {
     }
 
     /**
-     * @param {JSON} room Room to pickup item from
+     * @param {Room} room Room to pickup item from
      * @param {String} item Item to be picked up
+     * @returns {{'type': string, 'name': string} | null} Returns the
      */
     pickup(room, item) {
         let isPickedUp = false;
@@ -26,16 +32,18 @@ class Player {
         }
 
         if (isPickedUp) {
-            room.collectables[itemIndex].index = itemIndex;
-            return room.collectables[itemIndex]
+            this.inventory.push(room.collectables[itemIndex]);
+            let item = room.collectables.splice(itemIndex, 1)[0];
+            return item;
         } else {
             return null;
         }
     }
 
     /**
-     * @param {JSON} room Room to room in
+     * @param {Room} room Room to look in
      * @param {String} action What to look for
+     * @returns {String} Returns output text
      */
     look(room, action) {
         let text = "";
@@ -54,12 +62,10 @@ class Player {
                         }
                     }
                 } else {
-                    text = "There are no exits to be seen."
+                    text = "There are no exits to be seen.";
                 }
 
                 return text;
-
-                break;
             case "items":
                 text = "There is a ";
                 if (room.collectables.length === 1) {
@@ -77,9 +83,8 @@ class Player {
                     }
                     return text;
                 } else {
-                    return "There are no items."
+                    return "There are no items.";
                 }
-                break;
             case "around":
                 if (room.collectables.length >= 1) {
                     if (room.exits.length >= 1) {
@@ -93,9 +98,8 @@ class Player {
                     text += "I don't see antthing!";
                 }
                 return text;
-                break;
         }
     }
 }
 
-module.exports = new Player();
+module.exports = Player;
