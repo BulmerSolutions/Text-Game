@@ -81,7 +81,7 @@ let update = () => {
                     process.exit();
                     break;
                 case "goto":
-                    if (message.length >= 1) {
+                    if (message.length >= 2) {
                         game.goto(message[1]);
                     } else {
                         output += "Please enter a direction.";
