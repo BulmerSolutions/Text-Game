@@ -55,6 +55,8 @@ let update = () => {
         // decide what the player wants to do
         if (message[0] !== '') {
             switch (message[0]) {
+                case "search":
+                case "where":
                 case "look": // look for something
                     for (let i = 1; i < message.length; i++) {
                         switch (message[i]) {

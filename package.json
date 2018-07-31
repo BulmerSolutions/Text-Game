@@ -1,9 +1,18 @@
 {
     "name": "text-game",
     "version": "0.1.0",
-    "description": "",
+    "description": "A simple text-adventure game engine",
     "main": "app.js",
     "author": "Justin Bulmer",
+    "readme": "README.md",
+    "bugs": {
+        "url": "https://github.com/BulmerSolutions/Text-Game/issues"
+    },
+    "repository": {
+        "type": "Github",
+        "url": "https://github.com/BulmerSolutions/Text-Game"
+    },
+    "license": "MIT",
     "licenses": [
         {
             "type": "MIT",
