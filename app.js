@@ -23,7 +23,15 @@ process.stdout.write(color.erase.screen);
 
 // Print out the title
 process.title = GAMEDATA.title;
-console.log("\n " + color.bold.whiteBright(GAMEDATA.title) + " \n");
+console.log("\n " + color.bold.whiteBright(GAMEDATA.title));
+console.log(color.italic("  By: " + GAMEDATA.meta.author) + " \n");
+
+let dashes = "";
+for (let d = 0; d < GAMEDATA.title.length - 2; d++) {
+    dashes += "-";
+}
+
+console.log("  " + dashes + " \n");
 
 // Give the context of the room.
 if (typeof game.room.context === "string") {
@@ -40,23 +48,31 @@ let update = () => {
     // Ask what the player wants to do.
     input.question("\n" + color.whiteBright(" > "), (res) => {
         // receive message and chop it up
-        let messege = res.split(" ");
+        let message = res.split(" ");
 
         let output = "\n ";
 
         // decide what the player wants to do
-        if (messege[0] !== '') {
-            switch (messege[0]) {
+        if (message[0] !== '') {
+            switch (message[0]) {
                 case "look": // look for something
-                    if (messege.length >= 3) {
-                        output += player.look(game.room, messege[2]);
-                    } else {
-                        output += player.look(game.room, 'items');
+                    for (let i = 1; i < message.length; i++) {
+                        switch (message[i]) {
+                            case "exit":
+                                output += player.look(game.room, message[i]);
+                                break;
+                            case "items":
+                                output += player.look(game.room, 'items');
+                                break;
+                            case "around":
+                                output += player.look(game.room, 'around');
+                                break;
+                        }
                     }
                     break;
                 case "pickup": // pickup an item
-                    if (messege.length >= 2) {
-                        let item = player.pickup(game.room, messege[1]);
+                    if (message.length >= 2) {
+                        let item = player.pickup(game.room, message[1]);
                         output += "You picked up a " + item.name;
                     }
                     break;
@@ -64,12 +80,12 @@ let update = () => {
                     process.exit();
                     break;
                 case "goto":
-                    if (messege.length >= 1) {
+                    if (message.length >= 1) {
                         let index = null;
 
                         // find the desired room
                         for (let i = 0; i < game.room.exits.length; i++) {
-                            if (game.room.exits[i].direction === messege[1]) {
+                            if (game.room.exits[i].direction === message[1]) {
                                 index = game.room.exits[i].index;
                             }
                         }
