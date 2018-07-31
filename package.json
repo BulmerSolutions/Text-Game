@@ -1,0 +1,22 @@
+{
+    "name": "text-game",
+    "version": "0.1.0",
+    "description": "",
+    "main": "app.js",
+    "author": "Justin Bulmer",
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    ],
+    "dependencies": {
+        "cli-color": "^1.2.0"
+    },
+    "devDependencies": {
+        "pkg": "^4.3.3"
+    },
+    "scripts": {
+        "start": "node app"
+    }
+}

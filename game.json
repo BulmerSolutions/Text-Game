@@ -1,0 +1,37 @@
+{
+  "title": "A Simple Text Game",
+  "meta": {
+    "author": "Dylan Bulmer",
+    "tagline": "",
+    "welcome": ""
+  },
+  "rooms": [{
+      "location": "the forest",
+      "context": [
+        "You have been travelling, lost inside this forest for 48 hours now.",
+        "Hungry... and thirsty... You need a place to rest."
+      ],
+      "help": "Look around.",
+      "exits": [{
+        "direction": "north",
+        "index": 1,
+        "context": "A figure in the distance looks like a house."
+      }],
+      "collectables": [{
+        "name": "stick",
+        "type": "weapon"
+      }],
+      "enemies": []
+  },{
+      "location": "a log cabin",
+      "context": "You have approached a log cabin. Who's is it?",
+      "help": "Look around.",
+      "exits": [{
+        "direction": "south",
+        "index": 0,
+        "context": "The forest is back there."
+      }],
+      "collectables": [],
+      "enemies": []
+  }]
+}
